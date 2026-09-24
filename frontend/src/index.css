@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply m-0 p-0;
+  }
+}
+
+.svi-gauge-path {
+  transition: stroke-dasharray 1s ease-in-out;
+}

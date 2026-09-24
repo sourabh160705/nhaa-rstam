@@ -1,0 +1,33 @@
+
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=sqlite:///./rstam.db
+      - ENCRYPTION_KEY=change-me-in-production-32bytes!
+      - WHISPER_MODEL_SIZE=base
+    volumes:
+      - ./backend:/app
+      - db-data:/app/data
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend/src:/app/src
+    environment:
+      - VITE_API_URL=http://localhost:8000
+
+volumes:
+  db-data:

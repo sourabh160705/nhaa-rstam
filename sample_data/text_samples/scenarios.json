@@ -1,0 +1,64 @@
+{
+  "scenarios": [
+    {
+      "id": "scenario_low_risk",
+      "name": "Calm Legal Inquiry",
+      "description": "A person calmly asking about their rights under the SC/ST Act",
+      "text": "I want to know about my rights under the Scheduled Castes and Scheduled Tribes Prevention of Atrocities Act. I heard there are provisions for protection against caste discrimination. Can you tell me what remedies are available and how to file a complaint? I recently faced some issues at my workplace where people made remarks about my caste background. I want to understand the legal process.",
+      "language": "en",
+      "channel": "PORTAL",
+      "expected_risk": "LOW",
+      "expected_svi_range": [5, 25]
+    },
+    {
+      "id": "scenario_moderate_risk",
+      "name": "Social Boycott Report",
+      "description": "A person reporting social boycott and verbal abuse",
+      "text": "Sir, I am calling from a village in Maharashtra. The upper caste people in our village have boycotted our entire community. They are not allowing us to use the common well, not letting our children go to school. They are calling us names and humiliating us publicly. My family has been living here for generations but now they are threatening us. We feel isolated and helpless. The local police said they cannot do anything. We are very scared about what might happen next.",
+      "language": "en",
+      "channel": "VOICE_CALL",
+      "expected_risk": "MODERATE",
+      "expected_svi_range": [26, 50]
+    },
+    {
+      "id": "scenario_high_risk",
+      "name": "Physical Assault Victim",
+      "description": "A victim reporting physical assault and ongoing threats",
+      "text": "Please help me. My husband was beaten badly by a group of men from the dominant caste in our area. They attacked him with sticks and rods when he was returning from work. His head is bleeding and we took him to the hospital. They threatened us that if we file an FIR, they will kill our entire family. The police station is refusing to register our complaint. We have been displaced from our home and are staying at a relative's house. My children are terrified. I am afraid they will come for us again. We cannot sleep at night. The nightmare never ends.",
+      "language": "en",
+      "channel": "VOICE_CALL",
+      "expected_risk": "HIGH",
+      "expected_svi_range": [51, 75]
+    },
+    {
+      "id": "scenario_critical_risk",
+      "name": "Severe Trauma with Suicidal Ideation",
+      "description": "A victim expressing extreme distress and suicidal thoughts",
+      "text": "I cannot take this anymore. My daughter was raped by those people and when we went to the police, they threatened us. The case has been going on for three years and nothing has happened. Those men roam free and taunt us every day. My daughter tried to kill herself last month. I feel like I have no reason to live. What is the point of this life? Nobody helps us. The court dates keep getting postponed. We have lost everything - our house, our land, our dignity. I want to end it all. Nobody in this world cares about us. We are treated worse than animals. I am giving up.",
+      "language": "en",
+      "channel": "VOICE_CALL",
+      "expected_risk": "CRITICAL",
+      "expected_svi_range": [76, 100]
+    },
+    {
+      "id": "scenario_hindi_moderate",
+      "name": "Hindi Discrimination Report",
+      "description": "A Hindi-speaking person reporting caste discrimination",
+      "text": "Sahab, hamare gaon mein hamari jaati ke logon ko kuan se paani nahi bharne dete. Hamare bacchon ko school mein alag bithate hain. Jab humne shikayat ki toh unhone hamein dhamki di. Hum bahut pareshan hain. Police kuch nahi karti. Humein bahut darr lagta hai. Kripya hamari madad karein.",
+      "language": "hi",
+      "channel": "VOICE_CALL",
+      "expected_risk": "MODERATE",
+      "expected_svi_range": [30, 55]
+    },
+    {
+      "id": "scenario_witness_intimidation",
+      "name": "Witness Intimidation Case",
+      "description": "A witness reporting intimidation and death threats",
+      "text": "I witnessed a murder of a Dalit man in our village last month. I gave my statement to the police and now the accused and their supporters are threatening me and my family with death. They said they will burn my house down. They follow my children to school. Unknown people call me at night saying they will kill me if I don't withdraw my statement. I am the only witness and I am terrified for my life. I cannot go to work because I am afraid. My family is living in fear and we have nowhere to go. We need police protection immediately.",
+      "language": "en",
+      "channel": "VOICE_CALL",
+      "expected_risk": "HIGH",
+      "expected_svi_range": [55, 80]
+    }
+  ]
+}

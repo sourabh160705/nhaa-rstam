@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: nhaa-rstam-backend
+    runtime: python
+    region: singapore
+    plan: free
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: DATABASE_URL
+        value: sqlite:///./rstam.db
+      - key: ENCRYPTION_KEY
+        generateValue: true
+      - key: WHISPER_MODEL_SIZE
+        value: base
+      - key: PYTHON_VERSION
+        value: 3.11.0
+    healthCheckPath: /health
