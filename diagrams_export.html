@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NHAA-RSTAM Architecture & Process Diagrams (High-Res PNG Exporter)</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --border: #334155;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #3b82f6;
+      --accent-hover: #2563eb;
+      --success: #10b981;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 30px 20px;
+      line-height: 1.6;
+    }
+    .header {
+      max-width: 1200px;
+      margin: 0 auto 30px auto;
+      text-align: center;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    .header h1 {
+      font-size: 26px;
+      color: #60a5fa;
+      margin-bottom: 8px;
+    }
+    .header p {
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+    }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+    }
+    .card-header {
+      padding: 16px 24px;
+      background: rgba(15, 23, 42, 0.6);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .card-header h2 {
+      font-size: 18px;
+      color: #f1f5f9;
+    }
+    .btn-group {
+      display: flex;
+      gap: 10px;
+    }
+    button.btn {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    button.btn:hover {
+      background: var(--accent-hover);
+      transform: translateY(-1px);
+    }
+    button.btn-svg {
+      background: #475569;
+    }
+    button.btn-svg:hover {
+      background: #64748b;
+    }
+    .diagram-body {
+      padding: 30px 20px;
+      display: flex;
+      justify-content: center;
+      background: #ffffff;
+      overflow-x: auto;
+    }
+    .mermaid {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h1>NHAA-RSTAM Technical Architecture & Flow Charts</h1>
+    <p>100% Exact Code-Rendered Diagrams — Click <strong>"Download PNG"</strong> on any chart to export in high resolution</p>
+  </div>
+
+  <div class="container">
+
+    <!-- DIAGRAM 1 -->
+    <div class="card" id="card-1">
+      <div class="card-header">
+        <h2>1. System Architecture (5 Layers)</h2>
+        <div class="btn-group">
+          <button class="btn" onclick="exportPNG('diag-1', '1_system_architecture.png')">📥 Download PNG</button>
+          <button class="btn btn-svg" onclick="exportSVG('diag-1', '1_system_architecture.svg')">📄 Download SVG</button>
+        </div>
+      </div>
+      <div class="diagram-body">
+        <div class="mermaid" id="diag-1">
+graph TB
+    subgraph Input_Channels["Input Channels"]
+        A1["NHAA 14566<br/>Voice Call"]
+        A2["Integrated<br/>Web Portal"]
+        A3["Mobile App"]
+        A4["Chatbot /<br/>IVRS"]
+    end
+
+    subgraph Frontend["Frontend (React 18 + Vite)"]
+        B1["Consent Gate"]
+        B2["Voice Recorder<br/>(Record + Drag & Drop)"]
+        B3["Text Input<br/>(Narrative Entry)"]
+        B4["Operator Dashboard"]
+        B5["Case Detail View"]
+    end
+
+    subgraph API_Gateway["API Gateway (FastAPI)"]
+        C1["Authentication &<br/>Authorization"]
+        C2["/api/v1/assess/voice"]
+        C3["/api/v1/assess/text"]
+        C4["/api/v1/assess/combined"]
+        C5["/api/v1/dashboard/*"]
+        C6["/api/v1/cases/*"]
+    end
+
+    subgraph AI_Engine["AI Analysis Engine"]
+        subgraph Voice_Pipeline["Voice Pipeline"]
+            D1["Speech-to-Text<br/>(Whisper)"]
+            D2["Acoustic Feature<br/>Extraction (librosa)"]
+            D3["Voice Emotion<br/>Detection"]
+        end
+        subgraph Text_Pipeline["Text Pipeline"]
+            D4["Language Detection<br/>(langdetect)"]
+            D5["Translation<br/>(MarianMT)"]
+            D6["Trauma Keyword<br/>Analysis (7-category)"]
+            D7["Sentiment Analysis<br/>(Intensity-weighted)"]
+            D8["Suicidal Ideation<br/>Detection"]
+        end
+        D9["SVI Engine<br/>(Composite 0-100)"]
+        D10["Risk Categorizer"]
+        D11["Intervention<br/>Recommender"]
+    end
+
+    subgraph Data_Layer["Data & Security Layer"]
+        E1["SQLAlchemy ORM"]
+        E2["SQLite / PostgreSQL"]
+        E3["AES-256 Encryption"]
+        E4["PII Anonymizer"]
+        E5["Audit Logger"]
+    end
+
+    A1 --> B1
+    A2 --> B1
+    A3 --> B1
+    A4 --> B1
+
+    B1 --> B2
+    B1 --> B3
+    B2 --> C2
+    B3 --> C3
+    B2 --> C4
+    B3 --> C4
+    B4 --> C5
+    B5 --> C6
+
+    C1 --> C2
+    C1 --> C3
+    C1 --> C4
+
+    C2 --> D1
+    C2 --> D2
+    C2 --> D3
+
+    D1 --> D4
+    C3 --> D4
+    C4 --> D1
+    C4 --> D4
+
+    D4 --> D5
+    D5 --> D6
+    D5 --> D7
+    D5 --> D8
+
+    D2 --> D9
+    D3 --> D9
+    D6 --> D9
+    D7 --> D9
+    D8 --> D9
+
+    D9 --> D10
+    D10 --> D11
+
+    D9 --> E1
+    D11 --> E1
+    E4 --> D4
+    E1 --> E2
+    E1 --> E3
+    E1 --> E5
+        </div>
+      </div>
+    </div>
+
+    <!-- DIAGRAM 2 -->
+    <div class="card" id="card-2">
+      <div class="card-header">
+        <h2>2. Assessment Process Flow (End-to-End Decision Flowchart)</h2>
+        <div class="btn-group">
+          <button class="btn" onclick="exportPNG('diag-2', '2_process_flowchart.png')">📥 Download PNG</button>
+          <button class="btn btn-svg" onclick="exportSVG('diag-2', '2_process_flowchart.svg')">📄 Download SVG</button>
+        </div>
+      </div>
+      <div class="diagram-body">
+        <div class="mermaid" id="diag-2">
+flowchart TD
+    START(["START: Victim contacts NHAA 14566"])
+    
+    CONSENT{"Digital Consent<br/>Obtained?"}
+    DENY["Assessment Cannot Proceed<br/>(Log Attempt)"]
+    
+    INPUT_TYPE{"Input Type?"}
+    
+    subgraph VOICE_FLOW["Voice Analysis Flow"]
+        V1["Upload Audio / Record Live"]
+        V2["Validate Audio (format, size, duration)"]
+        V3["Speech-to-Text (Whisper Multilingual)"]
+        V4["Acoustic Feature Extraction<br/>(Pitch, Jitter, Shimmer, MFCC, Speech Rate)"]
+        V5["Voice Emotion Detection<br/>(Fear, Sadness, Anger, Distress)"]
+    end
+
+    subgraph TEXT_FLOW["Text Analysis Flow"]
+        T0["Enter Text Narrative"]
+        T1["PII Anonymization (Aadhaar, Phone, Names)"]
+        T2["Language Detection (22+ languages)"]
+        T3["Translation to English (MarianMT)"]
+        T4["Trauma Keyword Analysis<br/>(Violence, Discrimination, Threats, Psychological, Suicidal, Legal, Displacement)"]
+        T5["Sentiment Analysis (Intensity-weighted)"]
+        T6["Suicidal Ideation Detection (Explicit, Implicit, Contextual)"]
+    end
+
+    subgraph SVI_COMP["SVI Computation"]
+        S1["Collect Component Scores"]
+        S2["Weight Redistribution (for missing components)"]
+        S3["Compute Composite SVI (0-100 scale)"]
+        S4{"Suicidal Ideation<br/>Detected?"}
+        S5["Auto-Escalate<br/>SVI >= 76"]
+    end
+
+    subgraph RISK_CAT["Risk Categorization"]
+        R1{"SVI Score Range?"}
+        R_LOW["LOW (0-25)"]
+        R_MOD["MODERATE (26-50)"]
+        R_HIGH["HIGH (51-75)"]
+        R_CRIT["CRITICAL (76-100)"]
+    end
+
+    subgraph INTERVENTION["Interventions"]
+        I1["Generate Recommendations Based on Risk Level"]
+        I_CRISIS["Crisis Counselor Warm Transfer"]
+        I_POLICE["PCR Vehicle Dispatch"]
+        I_LEGAL["Legal Aid Connection"]
+        I_MEDICAL["Medical Referral"]
+        I_PROTECT["Witness Protection"]
+        I_FOLLOW["Follow-up Scheduling"]
+    end
+
+    subgraph PERSIST["Data Persistence"]
+        P1["Encrypt Sensitive Fields (AES-256)"]
+        P2["Save to Database (Case + Assessment + Interventions)"]
+        P3["Create Audit Log"]
+        P4["Display Results on Dashboard"]
+    end
+
+    START --> CONSENT
+    CONSENT -->|No| DENY
+    CONSENT -->|Yes| INPUT_TYPE
+    
+    INPUT_TYPE -->|Voice| V1
+    INPUT_TYPE -->|Text| T0
+    INPUT_TYPE -->|Combined| V1
+    INPUT_TYPE -->|Combined| T0
+    
+    V1 --> V2 --> V3 --> V4 --> V5
+    V3 --> T2
+
+    T0 --> T1 --> T2 --> T3
+    T3 --> T4
+    T3 --> T5
+    T3 --> T6
+
+    V4 --> S1
+    V5 --> S1
+    T4 --> S1
+    T5 --> S1
+    T6 --> S1
+    
+    S1 --> S2 --> S3
+    S3 --> S4
+    S4 -->|Yes| S5
+    S5 --> R1
+    S4 -->|No| R1
+
+    R1 -->|0-25| R_LOW
+    R1 -->|26-50| R_MOD
+    R1 -->|51-75| R_HIGH
+    R1 -->|76-100| R_CRIT
+
+    R_LOW --> I1
+    R_MOD --> I1
+    R_HIGH --> I1
+    R_CRIT --> I1
+
+    I1 --> I_CRISIS
+    I1 --> I_POLICE
+    I1 --> I_LEGAL
+    I1 --> I_MEDICAL
+    I1 --> I_PROTECT
+    I1 --> I_FOLLOW
+
+    I1 --> P1 --> P2 --> P3 --> P4
+        </div>
+      </div>
+    </div>
+
+    <!-- DIAGRAM 3 -->
+    <div class="card" id="card-3">
+      <div class="card-header">
+        <h2>3. SVI (Stress Vulnerability Index) Formula & Weights</h2>
+        <div class="btn-group">
+          <button class="btn" onclick="exportPNG('diag-3', '3_svi_formula.png')">📥 Download PNG</button>
+          <button class="btn btn-svg" onclick="exportSVG('diag-3', '3_svi_formula.svg')">📄 Download SVG</button>
+        </div>
+      </div>
+      <div class="diagram-body">
+        <div class="mermaid" id="diag-3">
+graph LR
+    subgraph Components["6 Weighted Components"]
+        C1["Acoustic Distress<br/>Weight: 20%"]
+        C2["Voice Emotion<br/>Weight: 15%"]
+        C3["Text Sentiment<br/>Weight: 15%"]
+        C4["Trauma Keywords<br/>Weight: 20%"]
+        C5["Suicidal Ideation<br/>Weight: 15%"]
+        C6["Contextual Factors<br/>Weight: 15%"]
+    end
+
+    SUM["Composite Formula:<br/>SVI = Sum (Score_i x Adjusted_Weight_i)<br/>Scale: 0 - 100"]
+
+    C1 --> SUM
+    C2 --> SUM
+    C3 --> SUM
+    C4 --> SUM
+    C5 --> SUM
+    C6 --> SUM
+
+    SUM --> LOW["LOW: 0 - 25"]
+    SUM --> MOD["MODERATE: 26 - 50"]
+    SUM --> HIGH["HIGH: 51 - 75"]
+    SUM --> CRIT["CRITICAL: 76 - 100<br/>(Auto-escalated if Suicidal Ideation)"]
+        </div>
+      </div>
+    </div>
+
+    <!-- DIAGRAM 4 -->
+    <div class="card" id="card-4">
+      <div class="card-header">
+        <h2>4. Data Flow & Security Sequence</h2>
+        <div class="btn-group">
+          <button class="btn" onclick="exportPNG('diag-4', '4_data_security_flow.png')">📥 Download PNG</button>
+          <button class="btn btn-svg" onclick="exportSVG('diag-4', '4_data_security_flow.svg')">📄 Download SVG</button>
+        </div>
+      </div>
+      <div class="diagram-body">
+        <div class="mermaid" id="diag-4">
+sequenceDiagram
+    participant V as Victim/Complainant
+    participant UI as Frontend Dashboard
+    participant API as FastAPI Backend
+    participant PII as PII Anonymizer
+    participant AI as AI Analysis Engine
+    participant ENC as AES-256 Encryption
+    participant DB as Database
+    participant OP as Operator
+
+    V->>UI: Submit voice/text via NHAA channel
+    UI->>UI: Record digital consent
+    UI->>API: POST /api/v1/assess/voice or /text
+    
+    API->>PII: Anonymize PII (Aadhaar, Phone, Names)
+    PII->>API: Redacted text returned
+    
+    API->>AI: Run Voice Pipeline (Whisper STT, Acoustic, Emotion)
+    API->>AI: Run Text Pipeline (Language, Translation, Trauma, Sentiment, SI)
+    AI->>API: Component scores returned
+    
+    API->>API: Compute SVI (0-100), Categorize Risk, Generate Interventions
+    
+    API->>ENC: Encrypt sensitive fields (AES-256)
+    ENC->>DB: Store Case + Assessment + Interventions
+    API->>DB: Create Audit Log Entry
+    
+    API->>UI: Return SVI score, risk level, recommendations
+    UI->>OP: Display on Operator Dashboard
+    
+    opt CRITICAL Risk
+        UI->>OP: Red Alert Banner + PCR Dispatch Recommendation
+    end
+        </div>
+      </div>
+    </div>
+
+    <!-- DIAGRAM 5 -->
+    <div class="card" id="card-5">
+      <div class="card-header">
+        <h2>5. Docker Compose Deployment Architecture</h2>
+        <div class="btn-group">
+          <button class="btn" onclick="exportPNG('diag-5', '5_deployment_architecture.png')">📥 Download PNG</button>
+          <button class="btn btn-svg" onclick="exportSVG('diag-5', '5_deployment_architecture.svg')">📄 Download SVG</button>
+        </div>
+      </div>
+      <div class="diagram-body">
+        <div class="mermaid" id="diag-5">
+graph TB
+    subgraph Docker_Compose["Docker Compose Deployment"]
+        subgraph FE_Container["Frontend Container (Node 20 Alpine)"]
+            FE1["Vite Dev Server :5173"]
+            FE2["React 18 SPA"]
+            FE3["Tailwind CSS"]
+        end
+        
+        subgraph BE_Container["Backend Container (Python 3.11)"]
+            BE1["Uvicorn ASGI :8000"]
+            BE2["FastAPI Application"]
+            BE3["ML Models (Whisper, Transformers)"]
+            BE4["8 AI Analyzers"]
+        end
+        
+        subgraph DB_Volume["Persistent Volume"]
+            DB1["SQLite Database"]
+            DB2["Encrypted Audit Logs"]
+            DB3["Assessment Records"]
+        end
+    end
+
+    USER["Operator / Admin"] -->|Port 5173| FE1
+    FE1 -->|Internal Network /api/v1| BE1
+    BE1 -->|Mount: /app/data| DB1
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'default',
+      securityLevel: 'loose',
+      flowchart: { useMaxWidth: true, htmlLabels: true, curve: 'basis' }
+    });
+
+    function exportSVG(containerId, filename) {
+      const container = document.getElementById(containerId);
+      const svg = container.querySelector('svg');
+      if (!svg) { alert('Diagram not ready yet'); return; }
+      
+      const serializer = new XMLSerializer();
+      let source = serializer.serializeToString(svg);
+      if(!source.match(/^<svg[^>]+xmlns="http\:\/\/www\.w3\.org\/2000\/svg"/)){
+        source = source.replace(/^<svg/, '<svg xmlns="http://www.w3.org/2000/svg"');
+      }
+      const blob = new Blob([source], {type: "image/svg+xml;charset=utf-8"});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    function exportPNG(containerId, filename) {
+      const container = document.getElementById(containerId);
+      const svg = container.querySelector('svg');
+      if (!svg) { alert('Diagram not ready yet'); return; }
+
+      const svgRect = svg.getBoundingClientRect();
+      const scale = 3; // 3x for ultra high resolution
+      const width = (svgRect.width || 1000) * scale;
+      const height = (svgRect.height || 600) * scale;
+
+      const serializer = new XMLSerializer();
+      let source = serializer.serializeToString(svg);
+      if(!source.match(/^<svg[^>]+xmlns="http\:\/\/www\.w3\.org\/2000\/svg"/)){
+        source = source.replace(/^<svg/, '<svg xmlns="http://www.w3.org/2000/svg"');
+      }
+
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, width, height);
+
+      const img = new Image();
+      const svgBlob = new Blob([source], {type: 'image/svg+xml;charset=utf-8'});
+      const url = URL.createObjectURL(svgBlob);
+
+      img.onload = function() {
+        ctx.drawImage(img, 0, 0, width, height);
+        URL.revokeObjectURL(url);
+        const pngUrl = canvas.toDataURL('image/png');
+        const a = document.createElement('a');
+        a.href = pngUrl;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      };
+      img.src = url;
+    }
+  </script>
+</body>
+</html>

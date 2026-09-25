@@ -1,10 +1,19 @@
 import axios from 'axios';
 
-// In production (Netlify), VITE_API_URL points to Render backend
-// In development, Vite proxy handles /api/v1 → localhost:8000
-const API_BASE = import.meta.env.VITE_API_URL
-  ? `${import.meta.env.VITE_API_URL}/api/v1`
-  : '/api/v1';
+// The live Render backend URL for this deployment
+const DEFAULT_RENDER_BACKEND = 'https://nhaa-rstam.onrender.com';
+
+// Handle trailing slashes and normalize the backend URL
+let rawUrl = import.meta.env.VITE_API_URL;
+
+// Fix common typo: nhaa-rstam-backend -> nhaa-rstam
+if (rawUrl && rawUrl.includes('nhaa-rstam-backend.onrender.com')) {
+  rawUrl = rawUrl.replace('nhaa-rstam-backend.onrender.com', 'nhaa-rstam.onrender.com');
+}
+
+const API_BASE = rawUrl
+  ? `${rawUrl.replace(/\/$/, '')}/api/v1`
+  : (import.meta.env.PROD ? `${DEFAULT_RENDER_BACKEND}/api/v1` : '/api/v1');
 
 const axiosInstance = axios.create({
   baseURL: API_BASE,

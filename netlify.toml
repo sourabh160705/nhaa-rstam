@@ -3,7 +3,14 @@
   command = "npm install && npm run build"
   publish = "dist"
 
-# SPA fallback — all routes serve index.html
+# Proxy API requests directly to the live Render backend
+[[redirects]]
+  from = "/api/v1/*"
+  to = "https://nhaa-rstam.onrender.com/api/v1/:splat"
+  status = 200
+  force = true
+
+# SPA fallback — all client-side routes serve index.html
 [[redirects]]
   from = "/*"
   to = "/index.html"
