@@ -2,6 +2,8 @@
 
 Coordinates language detection, translation, trauma keyword extraction,
 sentiment analysis, and suicidal ideation detection.
+Equipped with Next-Gen LLM semantic analysis (Llama 3.1) with automatic
+graceful fallback to local rule-based analyzers.
 """
 import time
 import logging
@@ -12,14 +14,16 @@ from ..analyzers.translator import TextTranslator
 from ..analyzers.trauma_keywords import TraumaKeywordAnalyzer
 from ..analyzers.sentiment import TextSentimentAnalyzer
 from ..analyzers.suicidal_ideation import SuicidalIdeationDetector
+from .llm_analyzer import LLMAnalyzer
 
 logger = logging.getLogger(__name__)
 
 
 class TextPipeline:
-    """Orchestrates text analysis through multiple NLP stages."""
+    """Orchestrates text analysis through LLM or local NLP stages."""
 
     def __init__(self):
+        self.llm = LLMAnalyzer()
         self.lang_detector = LanguageDetector()
         self.translator = TextTranslator()
         self.trauma = TraumaKeywordAnalyzer()
@@ -29,13 +33,8 @@ class TextPipeline:
     async def process(self, text: str, language: Optional[str] = None) -> dict:
         """Process text through the full analysis pipeline.
 
-        Args:
-            text: The victim/complainant narrative text.
-            language: Optional language code. If None, auto-detected.
-
-        Returns:
-            dict with detected_language, translations, trauma keywords,
-            sentiment scores, suicidal ideation results, and stage durations.
+        Tries deep LLM analysis first (Option B); falls back to local analyzers
+        if LLM is unconfigured or unavailable.
         """
         result = {
             "original_text": text,
@@ -49,12 +48,42 @@ class TextPipeline:
             "emotion_scores": [],
             "dominant_emotion": "neutral",
             "suicidal_ideation": {"flag": False, "confidence": 0.0, "matched_phrases": [], "risk_level": "none"},
+            "legal_violations": [],
+            "customized_recommendations": [],
+            "llm_enhanced": False,
             "durations": {},
         }
 
         if not text or not text.strip():
             return result
 
+        # ─── Option B: Next-Gen LLM Semantic Analysis (Llama 3.1) ───
+        if self.llm.is_configured():
+            llm_start = time.time()
+            try:
+                llm_res = await self.llm.analyze(text, language_hint=language)
+                if llm_res:
+                    result["detected_language"] = llm_res.get("detected_language") or language or "en"
+                    result["translated_text"] = llm_res.get("translated_text") or text
+                    result["trauma_score"] = float(llm_res.get("trauma_score", 0.0))
+                    result["trauma_categories"] = llm_res.get("trauma_categories", [])
+                    result["trauma_keywords"] = llm_res.get("trauma_keywords", [])
+                    result["sentiment"] = float(llm_res.get("sentiment", 0.0))
+                    result["sentiment_label"] = llm_res.get("sentiment_label", "neutral")
+                    result["dominant_emotion"] = llm_res.get("dominant_emotion", "neutral")
+                    result["suicidal_ideation"] = llm_res.get("suicidal_ideation", {
+                        "flag": False, "confidence": 0.0, "risk_level": "none", "matched_phrases": []
+                    })
+                    result["legal_violations"] = llm_res.get("legal_violations", [])
+                    result["customized_recommendations"] = llm_res.get("recommendations", [])
+                    result["llm_enhanced"] = True
+                    result["durations"]["llm"] = round(time.time() - llm_start, 3)
+                    logger.info("Text pipeline completed using Next-Gen LLM (%s)", self.llm.model)
+                    return result
+            except Exception as e:
+                logger.warning("LLM analysis failed, falling back to local analyzers: %s", e)
+
+        # ─── Fallback / Local Rule-Based Pipeline ───
         # Stage 1: Language Detection
         start = time.time()
         try:
@@ -108,21 +137,17 @@ class TextPipeline:
             logger.error("Sentiment analysis failed: %s", e)
         result["durations"]["sentiment"] = round(time.time() - start, 3)
 
-        # Stage 5: Suicidal Ideation Detection (run on BOTH original and translated text)
+        # Stage 5: Suicidal Ideation Detection
         start = time.time()
         try:
-            # Check translated text
             si_result_en = self.si_detector.analyze(analysis_text, language="en")
-            # Check original text too
             si_result_orig = self.si_detector.analyze(text, language=result["detected_language"])
 
-            # Take the higher-confidence detection
             if si_result_orig.get("confidence", 0) > si_result_en.get("confidence", 0):
                 si_best = si_result_orig
             else:
                 si_best = si_result_en
 
-            # Merge matched phrases from both
             all_phrases = list(set(
                 si_result_en.get("matched_phrases", []) + si_result_orig.get("matched_phrases", [])
             ))
@@ -134,8 +159,6 @@ class TextPipeline:
                 "risk_level": si_best.get("risk_level", "none"),
                 "recommendation": si_best.get("recommendation", ""),
             }
-            if result["suicidal_ideation"]["flag"]:
-                logger.warning("SUICIDAL IDEATION DETECTED: confidence=%.2f", result["suicidal_ideation"]["confidence"])
         except Exception as e:
             logger.error("Suicidal ideation detection failed: %s", e)
         result["durations"]["suicidal_ideation"] = round(time.time() - start, 3)

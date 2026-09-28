@@ -12,6 +12,9 @@ class Settings(BaseSettings):
     CONSENT_REQUIRED: bool = True
     SUPPORTED_LANGUAGES: list[str] = ['en', 'hi', 'ta', 'te', 'mr', 'bn', 'kn', 'gu', 'ml', 'pa', 'or', 'ur']
     CORS_ORIGINS: list[str] = ['http://localhost:5173', 'http://localhost:3000', '*']
+    GROQ_API_KEY: str = ""
+    LLM_MODEL: str = "llama-3.1-8b-instant"
+    LLM_BASE_URL: str = "https://api.groq.com/openai/v1"
 
     class Config:
         env_file = ".env"

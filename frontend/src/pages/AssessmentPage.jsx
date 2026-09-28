@@ -323,10 +323,17 @@ export default function AssessmentPage() {
             </div>
           </div>
 
-          {/* AI Details: Keywords, Sentiment, Transcript */}
+          {/* AI Details: Keywords, Sentiment, Legal Violations, Transcript */}
           {assessmentData.textAnalysis && (
             <div className="bg-white rounded-xl shadow-md border border-slate-200 p-6 space-y-4">
-              <h3 className="font-semibold text-slate-800 border-b pb-2">Analysis Breakdown</h3>
+              <div className="flex items-center justify-between border-b pb-2">
+                <h3 className="font-semibold text-slate-800">Analysis Breakdown</h3>
+                {assessmentData.textAnalysis.llm_enhanced && (
+                  <span className="text-xs bg-purple-100 text-purple-700 px-3 py-1 rounded-full font-bold flex items-center gap-1 shadow-sm">
+                    ✨ Llama 3.1 LLM Enhanced
+                  </span>
+                )}
+              </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                 <div>
                   <span className="text-slate-500 font-medium">Detected Language: </span>
@@ -341,6 +348,20 @@ export default function AssessmentPage() {
                   </span>
                 </div>
               </div>
+
+              {/* Legal Violations Identified by LLM */}
+              {assessmentData.textAnalysis.legal_violations?.length > 0 && (
+                <div className="bg-indigo-50/70 border border-indigo-200 rounded-xl p-4">
+                  <span className="text-xs font-bold text-indigo-900 uppercase tracking-wider block mb-2">
+                    ⚖️ Identified Legal Violations under SC/ST (PoA) Act
+                  </span>
+                  <ul className="list-disc list-inside space-y-1.5 text-xs text-indigo-800">
+                    {assessmentData.textAnalysis.legal_violations.map((violation, i) => (
+                      <li key={i} className="font-semibold">{violation}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
 
               {assessmentData.textAnalysis.trauma_keywords?.length > 0 && (
                 <div>
