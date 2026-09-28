@@ -2,17 +2,13 @@ import React from 'react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { AlertTriangle, Clock } from 'lucide-react';
 
-export default function RiskCard({ score, components }) {
-  // Default fallback data if none provided
-  const data = components || [
-    { name: 'Voice Emotion', value: 65, color: '#ef4444' },
-    { name: 'Text Sentiment', value: 45, color: '#eab308' },
-    { name: 'Urgency Lexicon', value: 80, color: '#7f1d1d' },
-    { name: 'Hesitation', value: 30, color: '#22c55e' }
-  ];
-
-  const isCritical = score > 75;
+export default function RiskCard({ score = 0, components = [], autoEscalated = false, escalationReason = '' }) {
+  const isCritical = score > 75 || autoEscalated;
   const isHigh = score > 50 && score <= 75;
+
+  const data = components.length > 0 ? components : [
+    { name: 'Analysis', value: Math.round(score), color: score > 75 ? '#ef4444' : score > 50 ? '#f97316' : score > 25 ? '#eab308' : '#22c55e' }
+  ];
 
   return (
     <div className={`bg-white rounded-xl shadow-md border ${isCritical ? 'border-red-500' : 'border-slate-200'} overflow-hidden flex flex-col h-full`}>
@@ -28,10 +24,10 @@ export default function RiskCard({ score, components }) {
       </div>
 
       <div className="p-5 flex-1 flex flex-col">
-        {isCritical && (
+        {autoEscalated && (
           <div className="bg-red-600 text-white p-3 rounded-lg text-sm font-medium mb-4 flex items-center gap-2 animate-pulse">
-            <AlertTriangle className="h-4 w-4" />
-            AUTO-ESCALATION TRIGGERED: Immediate supervisor attention required.
+            <AlertTriangle className="h-4 w-4 flex-shrink-0" />
+            <span>AUTO-ESCALATION TRIGGERED: {escalationReason || 'Immediate supervisor attention required.'}</span>
           </div>
         )}
 
@@ -39,8 +35,12 @@ export default function RiskCard({ score, components }) {
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={data} layout="vertical" margin={{ top: 5, right: 20, left: 40, bottom: 5 }}>
               <XAxis type="number" domain={[0, 100]} hide />
-              <YAxis dataKey="name" type="category" axisLine={false} tickLine={false} tick={{ fill: '#475569', fontSize: 12 }} width={120} />
-              <Tooltip cursor={{ fill: '#f1f5f9' }} contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} />
+              <YAxis dataKey="name" type="category" axisLine={false} tickLine={false} tick={{ fill: '#475569', fontSize: 12 }} width={140} />
+              <Tooltip
+                cursor={{ fill: '#f1f5f9' }}
+                contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                formatter={(val) => [`${val} / 100`, 'Score']}
+              />
               <Bar dataKey="value" radius={[0, 4, 4, 0]} barSize={24}>
                 {data.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={entry.color} />
